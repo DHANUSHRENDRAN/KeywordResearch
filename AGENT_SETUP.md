@@ -6,7 +6,7 @@ This project now features a multi-agent AI pipeline for blog content generation.
 
 1.  **Research Agent (Gemini 2.5 Flash)**: Analyzes search data (via SerpAPI) and generates a structured writing blueprint.
 2.  **Writing Agent (Mistral 7B Local)**: Authors the blog post based on research instructions, following the tone of the reference blog (empathetic, informative, professional).
-3.  **Branding Agent (Gemini 2.5 Flash)**: Evaluates the blog's brand alignment and providing a score (1-100).
+3.  **Branding Agent (OpenAI GPT-4o Mini)**: Evaluates the blog's brand alignment and providing a score (1-100).
 
 ## 🚀 How to Run
 
@@ -15,6 +15,7 @@ Ensure your `.env.local` contains the following:
 ```env
 SERPAPI_KEY=your_serpapi_key
 GEMINI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
 LOCAL_LLM_URL=http://localhost:11434/v1/chat/completions
 ```
 

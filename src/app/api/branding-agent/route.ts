@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from 'openai';
 
-const genAI = (key: string) => new GoogleGenerativeAI(key);
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(request: Request) {
-    const GEMINI_API_KEY = process.env.BRANDING_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
-    const MODEL_NAME = process.env.BRANDING_MODEL || "gemini-1.5-flash";
+    const MODEL_NAME = process.env.BRANDING_MODEL || "gpt-4o-mini";
 
-    if (!GEMINI_API_KEY) {
-        return NextResponse.json({ error: "Missing Branding Gemini API Key." }, { status: 500 });
+    if (!process.env.OPENAI_API_KEY) {
+        return NextResponse.json({ error: "Missing OpenAI API Key." }, { status: 500 });
     }
 
     try {
@@ -18,17 +19,12 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Blog content is required" }, { status: 400 });
         }
 
-        // 3. Use Gemini 1.5 Flash to analyze blog content
-        const client = genAI(GEMINI_API_KEY);
-        const model = client.getGenerativeModel({ model: MODEL_NAME });
-
-
         const prompt = `
             Rate this blog on a scale 1-100 for brand alignment (Empathetic, Nurturing, Professional).
             Reference: https://www.astrokids.ai/blogs/vedic-astrology-child-mental-health
             
             Blog:
-            ${blog_content.slice(0, 2000)} // Slice to save tokens
+            ${blog_content.slice(0, 4000)} // Increased slice size for 4o-mini
             
             JSON Output:
             - score (0-100)
@@ -39,11 +35,17 @@ export async function POST(request: Request) {
             Output ONLY valid JSON.
         `;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = response.text();
+        const response = await openai.chat.completions.create({
+            model: MODEL_NAME,
+            messages: [
+                { role: "system", content: "You are a branding expert specializing in brand alignment analysis." },
+                { role: "user", content: prompt }
+            ],
+            response_format: { type: "json_object" },
+            temperature: 0.7,
+        });
 
-        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        const text = response.choices[0].message.content || "{}";
 
         let analysis;
         try {
