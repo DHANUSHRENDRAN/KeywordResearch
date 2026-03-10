@@ -50,7 +50,7 @@ export default function WritingAgentPage() {
             }
         } catch (err: any) {
             console.error(err);
-            setError("Failed to connect to local Mistral 7B. Ensure local LLM server (Ollama) is running.");
+            setError("Failed to connect to the writing engine. Ensure your GROQ_API_KEY is valid in .env.local.");
         } finally {
             setLoading(false);
         }
@@ -78,7 +78,7 @@ export default function WritingAgentPage() {
                         Writing <span className="text-purple-500 drop-shadow-[0_0_20px_rgba(168,85,247,0.4)]">Agent.</span>
                     </h1>
                     <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium">
-                        Generating empathetic and informative blog content using Mistral 7B (Local Model).
+                        Generating empathetic and informative blog content using Llama 3 70B (Powered by Groq).
                     </p>
                 </motion.div>
 
@@ -175,7 +175,7 @@ export default function WritingAgentPage() {
                     </div>
                     <div className="space-y-1">
                         <p className="text-slate-500 font-black tracking-widest uppercase text-xs">Awaiting Agent Input</p>
-                        <p className="text-slate-600 text-sm max-w-xs mx-auto">Prepare the writing phase by clicking the button above. The local Mistral 7B model will then author the blog post.</p>
+                        <p className="text-slate-600 text-sm max-w-xs mx-auto">Prepare the writing phase by clicking the button above. The Llama 3 model will then author the blog post in seconds.</p>
                     </div>
                 </motion.div>
             )}
